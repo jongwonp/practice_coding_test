@@ -1,0 +1,1 @@
+repeat과 substr/slice를 사용

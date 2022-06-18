@@ -1,0 +1,58 @@
+function solution(people, limit) {
+    let count = 0;
+    let newPeople = people.filter(v => v <= limit - 40);    // 최저 무게는 40이고 만약 한도에서 40 뺀것보다 큰 인원은 혼자 탐
+    count = people.length - newPeople.length;
+
+    let pair = [];
+    let temp =[];
+    
+    while(newPeople.length !== 0){
+        pair.push(newPeople[0]);
+        newPeople.shift();
+    
+        for(i=0; i<newPeople.length; i++){
+            if(pair[0] + newPeople[i] == limit){
+                pair.shift();
+                newPeople.splice(i,1);
+                count++;
+                break;
+            }
+            if((pair[0] + newPeople[i] !== limit) && (i == newPeople.length -1)){
+                temp.push(pair([0]));
+                pair.shift();
+            }
+        }
+    }
+
+    if(pair.length == 1){
+        temp.push(pair[0]);
+        pair.shift();
+    }
+
+    while(temp.length !== 0){
+        pair.push(temp[0]);
+        temp.shift();
+
+        for(i=0; i<temp.length; i++){
+            if(pair[0] + temp[i] < limit){
+                pair.shift();
+                temp.splice(i,1);
+                count++;
+                break;
+            } 
+            if((pair[0] + temp[i] > limit) && (i == temp.length -1)){
+                count++;
+                pair.shift();
+            }
+        }
+    }
+
+    if(pair.length ==1){
+        count++
+    }
+
+return count
+}
+
+
+성공이거나 런타임 에러가 뜸.

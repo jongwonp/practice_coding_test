@@ -1,0 +1,18 @@
+arr.map((v,i) => {
+        if(v !== arr[i+1]){
+            answer.push(v);
+        }
+    })
+
+
+이렇게 map 안에서 if문을 썼는데(map으로 다르게 해보려 했는데 이렇게 될거였으면 forEach로 해도 되는 거였음.)
+
+filter는 map + 조건문 이므로 
+
+앞으로는 map에다가 조건문 써야하면 filter를 쓰자.
+
+
+그런데 filter 쓸 때
+
+filter(v => {v 조건문~}) 으로 쓰면 작동 안됨
+filter(v => v 조건문~) 으로 해야 됨

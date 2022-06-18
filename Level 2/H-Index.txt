@@ -1,0 +1,67 @@
+function solution(citations) {
+    let avg = citations.reduce((a,c) => a+c)/citations.length;
+
+    let citedNum = citations.filter(v=> v >= avg).length;
+
+    const func = (avg, citedNum) =>{
+        if(avg == citedNum){
+            return avg;  
+        } 
+        else if(avg > citedNum){
+            func(avg-1,citedNum);
+        } 
+        else {
+            func(avg+1, citedNum)
+        };
+    }
+    return func(avg,citedNum)
+}
+
+주제가 정렬인데 정렬을 한번도 하지 않았다.
+
+느리다는게 15개 답이 틀린게 1개로 16개 모두 틀렸다.
+
+
+
+정렬을 할 때 오히려 Max stack 이 초과했다는 오류가 나와서 안했었는데 
+자세히 보니 
+
+citations[citations.length/2]
+이렇게 해서 2.5번째 인덱스를 찾고 있어서 오류가 발생했었다.
+
+
+
+function solution(citations) {
+    citations.sort((a,b) => a-b);
+    let avg = citations[Math.ceil(citations.length/2)];
+
+    let citedNum = citations.filter(v=> v >= avg).length;
+    console.log(avg,citedNum);
+
+    if(avg == citedNum) return avg;
+    else if(avg > citedNum){
+        while(avg !== citedNum){
+            avg--;
+            citedNum = citations.filter(v=> v >= avg).length;
+            if(avg == citedNum) return avg;
+        }
+    }
+    else {
+        while(avg !== citedNum){
+            avg++;
+            citedNum = citations.filter(v=> v >= avg).length;
+            if(avg == citedNum) return avg;
+        }
+    }
+}
+
+14문제가 오래걸린 편이지만 간신히 통과
+2문제는 너무 느려서 실패
+
+문제는 h의 최댓값을 구하라이므로 다시 고치기
+
+문제를 잘못 이해했다.
+
+인용수 h 이하의 논문의 개수는 중요하지 않았는데 h이하의 논문의 개수도 h 이하여야 한다고 봤었다.
+
+h이상의 논문이 h편 이상  인 것 까지만 보고 풀면 쉽게 풀 수 있었다.

@@ -1,0 +1,28 @@
+배열.forEach(v => {~~}) 를 사용할 때
+forEach내부에서
+ v = 0 
+처럼 사용해서 v 값을 바꿔도 그 순간만 v로 바뀌고 다음인덱스의 v로 넘어가면 이전 인덱스의 v는 0이 아니라 다시 원상태로 돌아온다.
+
+따라서 (v,i) =>{~~} 로 바꿔서 
+배열[i] = 0
+처럼 사용해야 해당 값이 영구적으로 바뀐다.
+
+
+또, 문제에서 lost, reserve 배열이 정렬되어 있을 것이라고 생각했는데 그러면 틀리는 경우가 생긴다.
+
+
+
+
+
+
+////
+
+function solution(n, lost, reserve) {      
+    return n - lost.filter(a => {
+        const b = reserve.find(r => Math.abs(r-a) <= 1)
+        if(!b) return true
+        reserve = reserve.filter(r => r !== b)
+    }).length
+}
+
+몇몇 안풀리는 테스트 케이스가 있다고는 하는데 다른 케이스는 통과 했으니 분석해보자.

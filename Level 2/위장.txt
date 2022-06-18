@@ -1,0 +1,44 @@
+2차원 배열에서 arr[0].push 를 해도 1차 배열의 첫번째 2차배열에만 push 되지 않고 모든 2차배열에 push 되어 버림
+
+그냥 2차원 배열을 만들고 for문으로 arr[i].push를 해도 잘 된다.
+
+new Array(typeOfClothes.length).fill([])  ([],[])
+이렇게 new Array에 fill을 써서 만들어서 그런건지 이상태에서 arr[0].push 를 해도 양쪽에 다 들어간다.
+
+fill([]) 이 문제인것 같다
+
+new Array() ()=> new Array())  처럼 중첩으로 해야하는듯
+이렇게 해도 문제가 있음
+
+
+Array.from(Array(typeOfClothes.length), () => new Array()) 이렇게 정답.
+
+
+마지막에는 입지 않는 경우를 각 부위별 배열에 넣고 각 배열의 길이의 곱에서 -1(모두 입지 않는 경우)을 해서 답을 냄.
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+
+function solution(clothes) {
+    return Object.values(clothes.reduce((obj, t)=> {
+        obj[t[1]] = obj[t[1]] ? obj[t[1]] + 1 : 1;
+        return obj;
+    } , {})).reduce((a,b)=> a*(b+1), 1)-1;    
+}
+
+
+
+
+function solution(clothes) {
+    const types = {};
+    for(const [style, type] of clothes){
+        if(type in types) types[type] +=1;
+        else types[type] = 1;
+    }
+    let sum = 1;
+    for(const type in types) sum *= (types[type] + 1)
+    return sum -1;
+}
+
+간결한 사람들중에서 for of를 쓴사람이 많다

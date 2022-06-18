@@ -1,0 +1,60 @@
+function solution(n) {
+    let count = 0;                //연속 합이 n이되는 조합이 생기면 1씩 올릴 변수
+    for(i=1; i<=n; i++){             // 연속 합을 시작할 숫자를 올리는  for문
+        let sum = 0;                 //연속 합을 누적할 변수
+        for(j=i; j<=n; j++){              //연속할 숫자부터 1씩 올리면서 값을 더해나갈 for문
+            sum += j;
+            if(sum==n){                 //연속 합이 n과 같으면 count 올림
+                count++;
+                break;
+            }
+        }
+    }
+    return count;
+}
+
+정확도는 맞는데 효율성에서 다 떨어진다.
+다시보니 if(sum==n)이라서 끝까지 달려간것 같다.
+n보다 커지면 break되도록 바꿔봐야한다.
+
+
+
+function solution(n) {
+    let count = 0;                //연속 합이 n이되는 조합이 생기면 1씩 올릴 변수
+    for(i=1; i<=n; i++){             // 연속 합을 시작할 숫자를 올리는  for문
+        let sum = 0;                 //연속 합을 누적할 변수
+        for(j=i; j<=n; j++){              //연속할 숫자부터 1씩 올리면서 값을 더해나갈 for문
+            sum += j;
+            if(sum==n){                 //연속 합이 n과 같으면 count 올림
+                count++;
+                break;
+            }
+            else if(sum > n) break;
+        }
+    }
+    return count;
+}
+else if(sum > n) break 를 추가해도 전보다는 낫지만 효율성 절반이 틀린다.
+
+
+function solution(n) {
+    let count = 0;                //연속 합이 n이되는 조합이 생기면 1씩 올릴 변수
+    for(i=1; i<=n; i++){             // 연속 합을 시작할 숫자를 올리는  for문
+        let sum = 0;                 //연속 합을 누적할 변수
+        for(j=i; j<=n; j++){              //연속할 숫자부터 1씩 올리면서 값을 더해나갈 for문
+            sum += j;
+            if(sum>=n){                 //연속 합이 n과 같으면 count 올림
+                if(sum == n)count++;
+                break;
+            }
+        }
+    }
+    return count;
+}
+다른 답을 보니 비슷한데 뭐가 다른가 했더니 else if 대신 if문 안에 if문을 넣었다.
+변수명 말고는 다른게 없는데 그래도 틀린다.
+
+답에는 if(sum == n) 대신에 if(sum === n)이라고 되있다.
+정말로 ===로 해보니 맞았다. 이렇게 사소한거에도 차이가 있다니 놀랍다.
+console.time() / console.timeEnd() 로 확인해보니 0.01ms정도 차이가 난다. 큰차이는 아닌듯 한데 그 조금 차이로 효율성이 틀렸었다.
+계속 돌려보니 0.001ms 차이정도로 줄기도 한다. 상태 안좋을때 체크하면 ===로도 틀릴지도 모르겠다.

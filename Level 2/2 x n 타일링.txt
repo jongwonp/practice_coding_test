@@ -1,0 +1,21 @@
+function solution(n) {  // 문제는 n 이라는 수를 1(세로)과 2(가로)로 채우는 경우의 수를 묻는 중
+    let count = 0;
+    const width = 2;
+    const combination = (a,b) => {  //조합
+        let [x,y,z] = [1,1,1];
+        for(i=1; i<=a; i++){x*=i}
+        for(i=1; i<=b; i++){y*=i}
+        for(i=1; i<=a-b; i++){z*=i}
+        return x/(y*z);
+    }
+
+    for(i=parseInt(n/width); i>=0; i--){    // i = 가로의 개수
+        let j = n-(i*width);    // j = 세로의 개수
+        count += combination(i+j,j)/1000000007;     // 가로의 개수와 세로의 개수를 중복조합 한 것을 매번 더한다.
+    }
+    return count;
+}
+
+기본 테스트도 시간 초과가 난다.
+계속 반복문을 쓰니까 이해는 된다.
+답이 맞는지부터 볼 수가 없으니 포기한다.

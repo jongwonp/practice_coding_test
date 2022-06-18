@@ -1,0 +1,29 @@
+function solution(A,B){
+    let [maxA,maxB,minA,minB,sum] = [0,0,0,0,0];
+    while(A.length !==0){
+        maxA = Math.max(...A);
+        maxB = Math.max(...B);
+        minA = Math.min(...A);
+        minB = Math.min(...B);
+        if(A.length > 1){
+            sum = sum + maxA*minB + minA*maxB;
+            A.splice(A.indexOf(maxA),1)
+            A.splice(A.indexOf(minA),1)
+            B.splice(B.indexOf(maxB),1)
+            B.splice(B.indexOf(minB),1)
+        }
+        else {
+            sum = sum + maxA*minB
+            A.splice(A.indexOf(maxA),1);
+            B.splice(B.indexOf(maxB),1);
+        }
+    }
+    return sum;
+}
+중간에 console.log를 4번 넣어줬었는데 그거 때문에 효율성에서 다 떨어졌다.
+사소한것도 속도면에서 큰차이가 난다는 것 기억하자.
+
+그러고보니 굳이 max*min + max*min 을 한번에 하지 않고
+그냥 max*min 하고 splice로 삭제하는 것만 반복해도 알아서 그렇게 된다.
+
+하나는 오름차순 하나는 내림차순 sort해서 같은 index끼리 더하는 방법도 있었다.
