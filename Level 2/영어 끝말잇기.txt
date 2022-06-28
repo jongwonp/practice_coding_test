@@ -1,0 +1,40 @@
+다 좋았는데 
+중복단어 탈락자 체크할 때
+
+    for(i=0; i<words.length; i++){
+        for(j=0; j<words.length; j++){
+            if(i !== j){
+                if(words[i] === words[j]){
+                    check2 = j;
+                    break;
+                }
+            }
+        }
+        if(check2 !== 0) break;
+    }
+
+0번 인덱스랑 비교해서 같은게 나오면 바로 종료하도록 해버렸다. 
+
+만약 [1,2,2,1] 같은 배열이었으면 2번 인덱스가 탈락자인데 
+이런 상황을 걸러내지 못했다. 
+
+i<j 추가해서 해결했다.
+같은 배열내에서 중복요소 찾을 때 i<j 도 추가 해야 같은 i-j/j-i 쌍이 안나온다.
+
+
+
+
+20줄 미만으로 짠 코드들도 되게 많다.
+
+////////////////////////////////////////////////////////////////
+reduce 활용하는 코드가 다른 문제에서도 많이 보여서 이참에 공부해야할 듯
+
+function solution(n, words) {
+    let answer = 0;
+    words.reduce((prev, now, idx) => {
+        answer = answer || ((words.slice(0, idx).indexOf(now) !== -1 || prev !== now[0]) ? idx : answer);
+        return now[now.length-1];
+    }, "")
+
+    return answer ? [answer%n+1, Math.floor(answer/n)+1] : [0,0];
+}

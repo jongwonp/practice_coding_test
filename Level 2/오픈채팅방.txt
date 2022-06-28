@@ -1,0 +1,72 @@
+@@@@@@@@ 처리순서를 바꾸는 것이 유효했고, 마지막으로 세세하게 예외처리를 확인해서 잘 마무리 지었다.
+@@@@@@@@ 또, 유저아이디가 같은지를 묻는 쓸데없는 조건문을 없애기도 했다. 이미 닉네임 업데이트는 되었으니 조건문은 필요가 없었다.
+
+function solution(record) {
+    let result = [];
+    let obj = {};
+    record.forEach(v => {
+        let temp = v.split(' ');
+        if(temp[0] == 'Enter'){
+            result.push(`${temp[1]}님이 들어왔습니다.`)
+            obj[temp[1]] = temp[2];
+        }
+        else if(temp[0] == 'Leave'){
+            result.push(`${temp[1]}님이 나갔습니다.`)
+        }
+        else {
+            obj[temp[1]] = temp[2];
+        }
+    })
+    const keys = Object.keys(obj);
+    const values = Object.values(obj);
+
+    let joinResult = result.join('');
+
+    for(i=0; i<keys.length; i++){
+        joinResult = joinResult.replace(new RegExp(`${keys[i]}`,'g'),`  ${values[i]}`);
+        joinResult = joinResult.replace(new RegExp(/(\w\.)/,'g'),);
+    }
+
+    result = joinResult.split('  ');
+    result.shift()
+
+    return result
+}
+
+32문제중 8문제 통과   나머지 24문제 실패 중 8문제 시간초과
+
+먼저 들어왔습니다/나왔습니다 로 변형 시키고 나중에 닉네임을 바꾸는 것 보단
+
+먼저 닉네임을 바꿔놓고 마지막에 서술형으로 변형하는 방식으로 바꿔보자
+
+
+
+
+function solution(record) {
+    let lastNicknameObj = {};   // 유저아이디와 닉네임 쌍 저장할 객체
+    record = record.map(v => v.split(' ')); // 이용하기 쉽게 배열(record)의 요소(문자열)들을 배열로 만듬
+    record.forEach(v => {lastNicknameObj[v[1]] = v[2]}) // 닉네임 업데이트
+    record.forEach(v => {v[2] = lastNicknameObj[v[1]]}) // 업데이트된 닉네임으로 교체하기
+
+    let result = [];
+    record.forEach(v => {
+        if(v[0] == 'Enter'){
+            result.push(`${v[2]}님이 들어왔습니다.`);
+        }
+        else if(v[0] == 'Leave'){
+            result.push(`${v[2]}님이 나갔습니다.`);
+        }
+    })
+    return result;
+}
+
+더 간단하게 바꿨다. 그래서 더 빨라졌다.
+실패해도 시간초과로 실패하는 것은 없다.
+다만 통과한 문제가 2문제 뿐이다.
+
+중간에 [유저아이디가 객체의 아이디와 같다면] 처럼 쓸데없는 조건문을 생각했었다.
+조건 생각하다가 막히길래 보니 조건이 필요가 없이 이미 업데이트된 닉네임이 있으니 아이디에 해당하는 닉네임으로 바꿔주면 되었다.
+
+천천히 처음부터 되돌아가보니 map으로 문자열들을 배열로 바꿨을 때
+Leave인 경우에는 2번 인덱스가 없기 때문에 떠난 로그가 마지막인 유저는 닉네임이 사라져버림
+그래서 예외로 2번 인덱스가 있는 경우에만 계속 업데이트 해주도록했더니 완료.

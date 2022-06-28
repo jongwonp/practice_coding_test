@@ -1,0 +1,38 @@
+function solution(s){
+    s = s.split('');
+    let arr = [];
+
+    while(s.length){
+        if(arr[arr.length-1] == '(' && s[0] == ')'){
+            arr.pop();
+            s.shift();
+        }
+        else {
+            arr.push(s[0]);
+            s.shift();
+        }
+    }
+    return arr.length == 0 ? true : false
+}
+
+이렇게 스택으로 풀어봤는데 효율성에서 모두 시간초과다
+
+
+s를 그냥 문자열상태로 사용하고, arr도 매개변수 위치에서 정의하니 통과했다.
+
+
+
+///////////////////////////////////////////////////////////////////////
+cum이 음수가 되는 순간 탈락 -> ')'이 한번이라도 삭제 되지 않은 것.
+마지막에 cum이 0이 아니면? '('이 제거되지 않고 쌓인게 있다는 것.
+
+function solution(s){
+    let cum = 0
+    for (let paren of s) {
+        cum += paren === '('? 1: -1
+        if(cum < 0) {
+            return false
+        }
+    }
+    return cum === 0? true: false;
+}

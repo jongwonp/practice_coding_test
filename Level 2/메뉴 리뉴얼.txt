@@ -1,0 +1,152 @@
+조합으로 해결하긴 했는데 시간이 너무 오래걸린다.
+가장 오래걸리는 테스트 10이 2000ms가 나온다.
+주석이 너무 많은가해서 주석을 다 지워도 여전하다
+
+
+/////////////////////////////////////////////////////////////////////////
+이 풀이는 길이는 2~3줄 더 긴데 테스트 10이 34ms 나온다. 8ms가 나오기도 한다.
+
+function looper(menu, max, startIndex = 0, cur = 0, str = "") {
+  if (menu.length < max) return [];
+  if (menu.length === max) return [menu];
+
+  let fullList = [];
+  if (max === cur + 1) {
+    let ans = [];
+    for (let j = startIndex; j < menu.length - max + 1 + cur; j++) {
+      ans.push(str + menu[j]);
+    }
+    return ans;
+  } else {
+    for (let i = startIndex; i < menu.length - max + 1 + cur; i++) {
+      fullList = fullList.concat(
+        looper(menu, max, i + 1, cur + 1, str + menu[i])
+      );
+    }
+  }
+
+  return fullList;
+}
+
+function solution(orders, course) {
+  let answer = [];
+  course.forEach((n) => {
+    var cands = {};
+    orders.forEach((order) => {
+      looper(order, n).forEach((candidateList) => {
+        let sortedText = candidateList.split("").sort().join("");
+        cands[sortedText] = ++cands[sortedText] || 1;
+      });
+    });
+
+    let biggest = 2, //ignore menus less than 2
+      list = [];
+
+    for (const prop in cands) {
+      if (cands[prop] > biggest) {
+        list = [prop];
+        biggest = cands[prop];
+      } else if (cands[prop] === biggest) {
+        list.push(prop);
+      }
+    }
+    answer = answer.concat(list);
+  });
+
+  return answer.sort();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+이 풀이는 조합 함수를 쓴건 나랑 같은데 나머지 부분에서 더 줄였고, 가장 느린속도도 20~30ms이다.
+
+function solution(orders, course) {
+    var answer = [];
+    for (const selectNum of course) {
+        let combinations = []
+        for (const order of orders) {
+            getCombinations(Array.from(order), selectNum)
+                .map(combination => combination.sort().join(''))// 'WX'는 'XW'와 같아야한다.
+                .forEach(combString => combinations.push(combString))
+        }
+        const combCounts = combinations.reduce((counts, combination) => {
+            counts[combination] = (counts[combination] || 0) + 1;
+            return counts;
+        }, {});
+        let maxCount = 0, maxComb = []
+        for (const comb in combCounts) if (combCounts[comb] >= maxCount) maxCount = combCounts[comb]
+        for (const comb in combCounts) if (combCounts[comb] === maxCount && maxCount >= 2) maxComb.push(comb)
+        answer.push(...maxComb)
+    }
+    answer = answer.sort()
+    return answer;
+}
+
+const getCombinations = (array, selectNum) => {
+    const result = [];
+    if (selectNum === 1) return array.map((element) => [element]);
+    array.forEach((fixed, index, origin) => {
+        const restCombinations = getCombinations(origin.slice(index + 1), selectNum - 1);
+        const attached = restCombinations.map((restCombination) => [fixed, ...restCombination]);
+        result.push(...attached);
+    });
+    return result;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+한자리수대 ms 만 나온다.
+
+function subtract(set1, set2) {
+    const deletingValues = [];
+    for (const v of set1) {
+        if (!set2.has(v)) {
+            deletingValues.push(v);
+        }
+    }
+    for (const v of deletingValues) set1.delete(v);
+}
+
+function solution(orders, course) {
+    const ordersMap = new Map();
+    const answer = [];
+
+    orders.forEach((order, index) => {
+        for (let c of order) {
+            const orderSet = ordersMap.get(c);
+            if (orderSet == null) ordersMap.set(c, new Set([index]));
+            else {
+                orderSet.add(index);
+            }
+        }
+    });
+
+    const chars = Array.from(ordersMap.keys()).sort();
+    const lastCourse = course[course.length - 1];
+
+    for (let l = 2; l <= lastCourse; l++) {
+        const prevWords = Array.from(ordersMap.keys()).filter(k => k.length == l - 1).sort();
+        let max = 2;
+        let maxWords = [];
+        for (const prevWord of prevWords){
+            const lastChar = prevWord[prevWord.length - 1];
+            const appendingChars = chars.slice(chars.indexOf(lastChar) + 1);
+            for (const char of appendingChars) {
+                const newOrderSet = new Set(ordersMap.get(prevWord));
+                subtract(newOrderSet, ordersMap.get(char));
+                if (newOrderSet.size > 1) {
+                    const newWord = prevWord + char;
+                    ordersMap.set(newWord, newOrderSet);
+                    if (newOrderSet.size == max) maxWords.push(newWord);
+                    if (newOrderSet.size > max) {
+                        max = newOrderSet.size;
+                        maxWords = [newWord];
+                    }
+                }
+            }
+        }
+        if (course.includes(l)) answer.push(...maxWords);
+    }
+
+    answer.sort();
+    return answer;
+}

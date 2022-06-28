@@ -1,0 +1,30 @@
+function solution(arr) {
+    let primeArray = Array.from(Array(arr.length), () => []);
+
+    arr.map((value, index) => {
+        return primeFactorization(value,primeArray[index]);
+    })
+
+    primeArray = primeArray.filter(v => v.length !== 0);
+}
+
+const primeFactorization = (num,primeArr) => {
+    if(num === 1){
+        return primeArr;
+    }
+    for(i=2; i<=num; i++){
+        if(num%i == 0){
+            primeArr.push(i);
+            num = num/i;
+            break;
+        }
+    }
+    primeFactorization(num,primeArr);
+    return primeArr;
+}
+
+여기까지 하고 나서 너무 막혀서 다른 풀이를 보니 뻘짓을 하고 있다는 것을 알았다.
+배열에 담긴 수를 소인수분해 해서 소인수들을 배열에 담는 코드를 짠것에 의의를 둔다.
+
+나만의 생각대로 하느라 늦게 찾아봤다.
+유클리드 호제법으로 두 수의 최대공약수를 구할 수 있었다.
