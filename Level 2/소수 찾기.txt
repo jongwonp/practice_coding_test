@@ -1,0 +1,39 @@
+아무리 봐도 그냥 순열 뽑아 놓고 생각할 문제라서 순열 코드 복붙하고 이후 수월하게 풀었다.
+
+중복 제거를 위해서 처음으로 set을 써봤다.
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+순열도 안 쓴 것 같아 보이고, 가로 세로로 모두 짧은 편이라 눈이 간다.
+
+function solution(numbers) {
+    var answer = 0;
+    var set = new Set();
+    makeNumbers(set , '' , numbers.split(''));
+    return set.size;
+}
+
+function issosu(num) {
+    if( num < 2) return false;
+    for (var i =2; i <= num / 2 ; i++) {
+        if( num % i === 0) return false;
+    }
+    return true;
+}
+
+function makeNumbers(set , cur, nums) {
+    if( nums.length === 0 ) return;
+    var clone = nums.slice().reverse();
+    nums.forEach(function(i) {
+        var su = clone.pop();
+        var num = Number(cur+su);
+        if ( issosu(num)) {
+            set.add(num);
+        }
+
+        makeNumbers(set, cur+su , clone);
+        clone.unshift(su);
+    }) 
+}
