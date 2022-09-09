@@ -1,0 +1,45 @@
+function solution(n, k) {
+    let answer = new Array(n).fill(1).map((value, index) => value + index);
+    
+    return getPermutations(answer, n)[k-1]
+}
+
+const getPermutations = function (arr, selectNumber) {
+    const results = [];
+    if (selectNumber === 1) return arr.map((el) => [el]); 
+
+    arr.forEach((fixed, index, origin) => {
+      const rest = [...origin.slice(0, index), ...origin.slice(index+1)]      
+      const permutations = getPermutations(rest, selectNumber - 1);      
+      const attached = permutations.map((el) => [fixed, ...el]); 
+      
+      results.push(...attached);     
+    });
+
+    return results; 
+}
+
+이렇게 하니 정확도 14개중 10개는 통과하지만 4개가 런타임 에러, 효율성은 모두가 런타임 에러가 발생한다.
+
+단순히 검색해서 가져다 쓴 순열 함수는 O(n!)이라 효율이 좋지 않기에 순열을 구하는 함수를 바꿔야 할 것 같다.
+스택으로 구현하면 성능이 좋아진다고 한다.
+
+
+스택으로 구현할 아이디어는 떠오르지 않기에,
+일단 런타임 에러는 n이 최대일때 저장하는 값이 메모리를 초과해서 생긴다고 판단한다.
+모든 값을 push로 저장해두지 않고 k번째 값일 때 바로 반복을 중단하고 return 하도록 함수를 개조해보자.
+
+재귀를 사용해서 조합을 얻는 함수라서 그냥 push를 안하도록 하면 조합 자체를 만들어 나아갈 수가 없다.
+
+그래서 조합을 얻는 중간단계가 아니라 완성된 조합의 조각을 만들었을 때 k번째에 도달하지 않았다면 
+몇 번째인지만 기록하고 배열은 삭제하는 방법을 사용해보았는데 오히려 모든 테스트에서 런타임 에러가 발생했다.
+
+
+그냥 n명이 줄서는 경우의 수는 n!이므로 이 팩토리얼에 관한 수학적 풀이를 활용해야 한다는 결론이다.
+n!가지 경우의 수 중에서 앞자리가 바뀌는 경우는 (n-1)!이다. 
+k번째가 궁금하므로 k를 (n-1)!으로 나눠서 몫과 나머지를 구하고 계속 반복하면 된다.
+
+처음 나눗셈을 시작할 때는 k가 아닌 k-1을 넣어야 한다.
+이유는 k를 나눌 때 나누어 떨어져버리는 경우는 앞자리가 바뀌는 경우가 아닌 앞자리가 바뀌기 전 마지막인 경우이기 때문에 아예 k-1을 해서 앞자리가 바뀌는 묶음끼리 묶는 것이다.
+이후에 나눗셈을 할 때는 그냥 계속 이전 나눗셈의 나머지를 그대로 나누어질 수로 사용하면 된다.
+
